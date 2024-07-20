@@ -1,10 +1,12 @@
 plugins {
     id 'java'
-    id 'org.jetbrains.kotlin.jvm'
+    id 'maven-publish'
+    id 'cl.franciscosolis.sonatype-central-upload' version '1.0.3'
 }
 
 group = 'io.github.k3nder'
 version = '1.0-SNAPSHOT'
+def github = "k3nder/kystem"
 
 repositories {
     mavenCentral()
@@ -13,14 +15,30 @@ repositories {
 dependencies {
     testImplementation platform('org.junit:junit-bom:5.10.0')
     testImplementation 'org.junit.jupiter:junit-jupiter'
-    implementation "org.jetbrains.kotlin:kotlin-stdlib-jdk8"
-    implementation 'com.fasterxml.jackson.core:jackson-databind:2.13.4'
-    implementation 'com.fasterxml.jackson.dataformat:jackson-dataformat-properties:2.13.4'
 }
-
+java {
+    withSourcesJar()
+    withJavadocJar()
+}
 test {
     useJUnitPlatform()
 }
-kotlin {
-    jvmToolchain(21)
+task githubs {
+    doLast {
+        println "github:$github"
+    }
+}
+
+sonatypeCentralUpload {
+    username = "${project.findProperty("SONATYPE_USERNAME")}"             // This is your Sonatype generated username
+    password = "${project.findProperty("SONATYPE_PASSWORD")}"                      // This is your sonatype generated password
+
+    archives = files("build/libs/kystem-${version}.jar", "build/libs/kystem-${version}-javadoc.jar", "build/libs/kystem-${version}-sources.jar")                       // This is a list of files to upload. Ideally you would point to your jar file, source and javadoc jar (required by Central)
+    pom = file("maven/pom.xml")                   // This is the pom file to upload. This is required by Central
+
+    signingKey = "${project.findProperty("SINGING_KEY")}"  // This is your PGP private key. This is required to sign your files
+    signingKeyPassphrase = "${project.findProperty("SINGING_KEY_PASSWORD")}"                    // This is your PGP private key passphrase (optional) to decrypt your private key
+    publicKey = "${project.findProperty("PUBLIC_KEY")}"    // This is your PGP public key (optional). To distribute later to verify your deployments.
+
+    publishingType = "AUTOMATIC"                    // This is the publishing strategy (optional). By default, the plugin automatically publishes the jar to Central. The possible values are: AUTOMATIC (default) or MANUAL.
 }

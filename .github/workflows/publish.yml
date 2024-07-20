@@ -1,0 +1,90 @@
+name: publish
+on:
+  push:
+    branches:
+      - main
+
+jobs:
+  build:
+    runs-on: ubuntu-latest
+
+    steps:
+      - name: Checkout
+        uses: actions/checkout@v2
+
+      - name: Configure java 21
+        uses: actions/setup-java@v2
+        with:
+          distribution: "adopt"
+          java-version: "21"
+
+      - name: Gradle build
+        run: ./gradlew build
+
+      - name: Create pom.xml
+        run: |
+          version=$(./gradlew properties | grep 'version:' | awk '{print $2}')
+          github=$(./gradlew githubs | grep 'github' | awk '{print $2}')
+          groupId="io.github.k3nder"
+          artifactId=$(.gradlew properties | grep 'name:' | awk '{print $2}')
+          
+          echo "<project xmlns="http://maven.apache.org/POM/4.0.0" xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance" xsi:schemaLocation="http://maven.apache.org/POM/4.0.0 http://maven.apache.org/xsd/maven-4.0.0.xsd">
+          <modelVersion>4.0.0</modelVersion>
+          <groupId>$groupId</groupId>
+          <artifactId>$artifactId</artifactId>
+          <version>$version</version>
+          <description>system utils</description>
+          <name>$groupId</name>
+          <!--  FIXME change it to the project's website  -->
+          <url>http://github.com/$github</url>
+          <licenses>
+          <license>
+          <name>Apache License, Version 2.0</name>
+          <url>http://www.apache.org/licenses/LICENSE-2.0.txt</url>
+          <distribution>repo</distribution>
+          </license>
+          </licenses>
+          <developers>
+          <developer>
+          <name>kristian</name>
+          <email>k3nder@outlook.es</email>
+          <organization>kender</organization>
+          </developer>
+          </developers>
+          <distributionManagement>
+          <snapshotRepository>
+          <id>ossrh</id>
+          <url>https://oss.sonatype.org/content/repositories/snapshots</url>
+          </snapshotRepository>
+          <repository>
+          <id>ossrh</id>
+          <url>https://oss.sonatype.org/service/local/staging/deploy/maven2/</url>
+          </repository>
+          </distributionManagement>
+          <scm>
+          <connection>scm:git:git://github.com/$github.git</connection>
+          <developerConnection>scm:git:ssh://github.com:$github.git</developerConnection>
+          <url>https://github.com/$github/tree/main</url>
+          </scm>
+          <properties>
+          <project.build.sourceEncoding>UTF-8</project.build.sourceEncoding>
+          </properties>
+          </project>" >> maven/pom.xml
+      - name: publish
+        run: ./gradlew sonatypeCentralUpload
+        env:
+          SONATYPE_USERNAME: ${{ secret.SONATYPE_USERNAME }}
+          SONATYPE_PASSWORD: ${{ secret.SONATYPE_PASSWORD }}
+          SINGING_KEY: ${{ secret.SINGING_KEY }}
+          SINGING_KEY_PASSWORD: ${{ secret.SINGING_KEY_PASSWORD }}
+          PUBLIC_KEY: ${{ secret.PUBLIC_KEY }}
+
+
+      - name: Push github release
+        uses: softprops/action-gh-release@v1
+        with:
+          files: build/libs/*
+          tag_name: release
+          name: ss
+        env:
+          GITHUB_TOKEN: ${{ secrets.GH_TOKEN }}

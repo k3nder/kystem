@@ -3,7 +3,9 @@ package net.k3nder.files;
 import net.k3nder.os.OS;
 
 import java.io.File;
-
+/**
+ * @author k3nder
+ * */
 public class DefaultPaths {
     private DefaultPaths() {}
     private static final OS SYS = OS.getOS();
