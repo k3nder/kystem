@@ -73,11 +73,11 @@ jobs:
       - name: publish
         run: ./gradlew sonatypeCentralUpload
         env:
-          SONATYPE_USERNAME: ${{ secret.SONATYPE_USERNAME }}
-          SONATYPE_PASSWORD: ${{ secret.SONATYPE_PASSWORD }}
-          SINGING_KEY: ${{ secret.SINGING_KEY }}
-          SINGING_KEY_PASSWORD: ${{ secret.SINGING_KEY_PASSWORD }}
-          PUBLIC_KEY: ${{ secret.PUBLIC_KEY }}
+          SONATYPE_USERNAME: ${{ secrets.SONATYPE_USERNAME }}
+          SONATYPE_PASSWORD: ${{ secrets.SONATYPE_PASSWORD }}
+          SINGING_KEY: ${{ secrets.SINGING_KEY }}
+          SINGING_KEY_PASSWORD: ${{ secrets.SINGING_KEY_PASSWORD }}
+          PUBLIC_KEY: ${{ secrets.PUBLIC_KEY }}
 
 
       - name: Push github release
