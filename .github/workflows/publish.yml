@@ -88,8 +88,8 @@ jobs:
         run: |
           version=$(./gradlew properties | grep 'name:' | awk '{print $2}')
           artifact=$(./gradlew properties | grep 'name:' | awk '{print $2}')
-          echo "version=$version" >> $env:GITHUB_ENV
-          echo "artifact=$artifact" >> $env:GITHUB_ENV
+          echo "version=$version" >> $GITHUB_ENV
+          echo "artifact=$artifact" >> $GITHUB_ENV
 
       - name: Push github release
         uses: softprops/action-gh-release@v1
