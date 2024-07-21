@@ -46,8 +46,8 @@ public class Compatibility {
         properties.load(file);
         var specicications = new Specicications(
                 Integer.parseInt(properties.getProperty("RAM")),
-                (Architecture[]) Arrays.stream(properties.getProperty("ARCHITECTURE").split(";")).map(Architecture::ofString).toArray(),
-                (OS[]) Arrays.stream(properties.getProperty("SYSTEM").split(";")).map(OS::ofString).toArray());
+                Arrays.stream(properties.getProperty("ARCHITECTURE").split(";")).map(Architecture::ofString).toList().toArray(new Architecture[] {}),
+                Arrays.stream(properties.getProperty("SYSTEM").split(";")).map(OS::ofString).toList().toArray(new OS[] {}));
         verify(specicications, event);
     }
     public void verify(OnIncompatibility event) throws IOException {
