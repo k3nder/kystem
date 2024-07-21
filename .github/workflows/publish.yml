@@ -70,6 +70,9 @@ jobs:
           <project.build.sourceEncoding>UTF-8</project.build.sourceEncoding>
           </properties>
           </project>" > maven/pom.xml
+
+      - name: verify pom.xml
+        run: cat maven/pom.xml
       - name: publish
         run: ./gradlew sonatypeCentralUpload
         env:
