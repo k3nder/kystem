@@ -5,9 +5,12 @@ on:
       - main
 
 jobs:
-  build:
+  publish:
     runs-on: ubuntu-latest
-
+    env:
+      version: 1.0
+      artifact: art
+      group: io.github.k3nder
     steps:
       - name: Checkout
         uses: actions/checkout@v2
@@ -25,7 +28,7 @@ jobs:
         run: |
           version=$(./gradlew properties | grep 'version:' | awk '{print $2}')
           github=$(./gradlew githubs | grep 'github' | awk '{print $2}')
-          groupId="io.github.k3nder"
+          groupId=${{ env.group }}
           artifactId=$(./gradlew properties | grep 'name:' | awk '{print $2}')
           
           echo "<project xmlns=\"http://maven.apache.org/POM/4.0.0\" xmlns:xsi=\"http://www.w3.org/2001/XMLSchema-instance\" xsi:schemaLocation=\"http://maven.apache.org/POM/4.0.0 http://maven.apache.org/xsd/maven-4.0.0.xsd\">
@@ -81,13 +84,18 @@ jobs:
           SINGING_KEY: ${{ secrets.SINGING_KEY }}
           SINGING_KEY_PASSWORD: ${{ secrets.SINGING_KEY_PASSWORD }}
           PUBLIC_KEY: ${{ secrets.PUBLIC_KEY }}
-
+      - name: push data to env
+        run: |
+          version=$(./gradlew properties | grep 'name:' | awk '{print $2}')
+          artifact=$(./gradlew properties | grep 'name:' | awk '{print $2}')
+          echo "version=$version" >> $env:GITHUB_ENV
+          echo "artifact=$artifact" >> $env:GITHUB_ENV
 
       - name: Push github release
         uses: softprops/action-gh-release@v1
         with:
           files: build/libs/*
-          tag_name: release
-          name: ss
+          tag_name: ${{ env.version }}
+          name: ${{ env.artifact }}-${{ env.version }}-${{ env.group }}
         env:
           GITHUB_TOKEN: ${{ secrets.GH_TOKEN }}
