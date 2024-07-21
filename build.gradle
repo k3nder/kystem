@@ -28,17 +28,15 @@ task githubs {
         println "github:$github"
     }
 }
-
 sonatypeCentralUpload {
-    username = "${project.findProperty("SONATYPE_USERNAME")}"             // This is your Sonatype generated username
-    password = "${project.findProperty("SONATYPE_PASSWORD")}"                      // This is your sonatype generated password
-
+    username = "${System.getenv("SONATYPE_USERNAME")}"             // This is your Sonatype generated username
+    password = "${System.getenv("SONATYPE_PASSWORD")}"                      // This is your sonatype generated password
     archives = files("build/libs/kystem-${version}.jar", "build/libs/kystem-${version}-javadoc.jar", "build/libs/kystem-${version}-sources.jar")                       // This is a list of files to upload. Ideally you would point to your jar file, source and javadoc jar (required by Central)
     pom = file("maven/pom.xml")                   // This is the pom file to upload. This is required by Central
 
-    signingKey = "${project.findProperty("SINGING_KEY")}"  // This is your PGP private key. This is required to sign your files
-    signingKeyPassphrase = "${project.findProperty("SINGING_KEY_PASSWORD")}"                    // This is your PGP private key passphrase (optional) to decrypt your private key
-    publicKey = "${project.findProperty("PUBLIC_KEY")}"    // This is your PGP public key (optional). To distribute later to verify your deployments.
+    signingKey = "${System.getenv("SINGING_KEY")}"  // This is your PGP private key. This is required to sign your files
+    signingKeyPassphrase = "${System.getenv("SINGING_KEY_PASSWORD")}"                    // This is your PGP private key passphrase (optional) to decrypt your private key
+    publicKey = "${System.getenv("PUBLIC_KEY")}"    // This is your PGP public key (optional). To distribute later to verify your deployments.
 
     publishingType = "AUTOMATIC"                    // This is the publishing strategy (optional). By default, the plugin automatically publishes the jar to Central. The possible values are: AUTOMATIC (default) or MANUAL.
 }
