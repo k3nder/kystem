@@ -26,7 +26,7 @@ jobs:
           version=$(./gradlew properties | grep 'version:' | awk '{print $2}')
           github=$(./gradlew githubs | grep 'github' | awk '{print $2}')
           groupId="io.github.k3nder"
-          artifactId=$(.gradlew properties | grep 'name:' | awk '{print $2}')
+          artifactId=$(./gradlew properties | grep 'name:' | awk '{print $2}')
           
           echo "<project xmlns="http://maven.apache.org/POM/4.0.0" xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance" xsi:schemaLocation="http://maven.apache.org/POM/4.0.0 http://maven.apache.org/xsd/maven-4.0.0.xsd">
           <modelVersion>4.0.0</modelVersion>
