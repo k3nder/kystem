@@ -5,7 +5,7 @@ plugins {
 }
 
 group = 'io.github.k3nder'
-version = '1.1'
+version = '1.2'
 def github = "k3nder/kystem"
 
 repositories {
