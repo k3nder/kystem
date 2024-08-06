@@ -77,7 +77,7 @@ jobs:
       - name: verify pom.xml
         run: cat maven/pom.xml
       - name: publish
-        run: ./gradlew sonatypeCentralUpload
+        run: env
         env:
           SONATYPE_USERNAME: ${{ secrets.SONATYPE_USERNAME }}
           SONATYPE_PASSWORD: ${{ secrets.SONATYPE_PASSWORD }}
