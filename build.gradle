@@ -29,6 +29,9 @@ task githubs {
     }
 }
 sonatypeCentralUpload {
+    println "${System.getenv("SINGING_KEY")}"
+    println "${System.getenv("PUBLIC_KEY")}"
+    
     username = "${System.getenv("SONATYPE_USERNAME")}"             // This is your Sonatype generated username
     password = "${System.getenv("SONATYPE_PASSWORD")}"                      // This is your sonatype generated password
     archives = files("build/libs/kystem-${version}.jar", "build/libs/kystem-${version}-javadoc.jar", "build/libs/kystem-${version}-sources.jar")                       // This is a list of files to upload. Ideally you would point to your jar file, source and javadoc jar (required by Central)
